@@ -1,0 +1,23 @@
+{
+  "name": "brains.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gadgetboy27/brains.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gadgetboy27/brains.js/issues"
+  },
+  "homepage": "https://github.com/gadgetboy27/brains.js#readme",
+  "dependencies": {
+    "brain.js": "^2.0.0-alpha.9"
+  }
+}
