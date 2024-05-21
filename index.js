@@ -33,7 +33,7 @@ window.onload = () => {
 function staticLoadPlaces() {
   return [
       {
-          name: "Your place name",
+          name: "My place name",
           location: {
               lat: 0, // add here latitude if using static data
               lng: 0, // add here longitude if using static data
@@ -42,15 +42,15 @@ function staticLoadPlaces() {
       {
           name: 'Another place name',
           location: {
-              lat: 0,
-              lng: 0,
+              lat: 44.498529, 
+              lng: 11.356657,
           }
       }
   ];
 }
 
 // getting places from REST APIs
-function dynamicLoadPlaces(position) {
+async function dynamicLoadPlaces(position) {
   let params = {
       radius: 300,    // search places not farther than this value (in meters)
       clientId: 'HZIJGI4COHQ4AI45QXKCDFJWFJ1SFHYDFCCWKPIJDWHLVQVZ',   // add your credentials here
