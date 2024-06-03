@@ -41,6 +41,7 @@ async function dynamicLoadPlaces(position) {
         clientSecret: process.env.FOURSQUARE_CLIENT_SECRET,
         version: '20300101',
     };
+    console.log('Lat & Long', params)
 
     const corsProxy = 'https://cors-anywhere.herokuapp.com/';
     const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
