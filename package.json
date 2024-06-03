@@ -20,6 +20,7 @@
   "dependencies": {
     "@ar-js-org/ar.js": "^3.4.5",
     "ar.js": "^2.2.2",
-    "brain.js": "^2.0.0-alpha.9"
+    "brain.js": "^2.0.0-alpha.9",
+    "dotenv": "^16.4.5"
   }
 }
