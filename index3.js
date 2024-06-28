@@ -68,7 +68,7 @@ function renderPlaces(places) {
         const icon = document.createElement('a-image');
         icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
         icon.setAttribute('name', place.name);
-        icon.setAttribute('src', 'assets/models/arrow-model.glb'); // Update with correct path
+        icon.setAttribute('src', '/assets/models/arrow-model.glb'); // Update with correct path
         icon.setAttribute('scale', '20 20 20');
 
         icon.addEventListener('loaded', () => window.dispatchEvent(new CustomEvent('gps-entity-place-loaded')));
