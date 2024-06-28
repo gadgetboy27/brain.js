@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 window.onload = () => {
     navigator.geolocation.getCurrentPosition(function (position) {
         dynamicLoadPlaces(position.coords)
@@ -34,18 +32,17 @@ window.onload = () => {
     });
 };
 
-async function dynamicLoadPlaces(position) {
+async function dynamicLoadPlaces(coords) {
     const params = {
         radius: 300, // search places not farther than this value (in meters)
-        clientId: process.env.FOURSQUARE_CLIENT_ID,
-        clientSecret: process.env.FOURSQUARE_CLIENT_SECRET,
-        version: '20300101',
+        clientId: 'YOUR_FOURSQUARE_CLIENT_ID',
+        clientSecret: 'YOUR_FOURSQUARE_CLIENT_SECRET',
+        version: '20230623',
     };
-    console.log('Lat & Long', params)
 
     const corsProxy = 'https://cors-anywhere.herokuapp.com/';
     const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
-        &ll=${position.latitude},${position.longitude}
+        &ll=${coords.latitude},${coords.longitude}
         &radius=${params.radius}
         &client_id=${params.clientId}
         &client_secret=${params.clientSecret}
@@ -57,6 +54,7 @@ async function dynamicLoadPlaces(position) {
         .then((resp) => resp.response.venues)
         .catch((err) => {
             console.error('Error with places API', err);
+            throw err;
         });
 }
 
@@ -67,10 +65,10 @@ function renderPlaces(places) {
         const latitude = place.location.lat;
         const longitude = place.location.lng;
 
-        const icon = document.createElement('a-image');
+        const icon = document.createElement('a-scene');
         icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
         icon.setAttribute('name', place.name);
-        icon.setAttribute('src', '/assets/map-marker.png');
+        icon.setAttribute('src', 'assets/arrow-model.glb'); // Update with correct path
         icon.setAttribute('scale', '20 20 20');
 
         icon.addEventListener('loaded', () => window.dispatchEvent(new CustomEvent('gps-entity-place-loaded')));
