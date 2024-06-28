@@ -32,7 +32,7 @@ function renderPlaces(places) {
     places.forEach(location => {
         const arrow = document.createElement('a-entity');
         arrow.setAttribute('gps-entity-place', `latitude: ${location.latitude}; longitude: ${location.longitude};`);
-        arrow.setAttribute('gltf-model', '#arrow-model');
+        arrow.setAttribute('src', '#arrow-model');
         arrow.setAttribute('scale', '1 1 1');
         entitiesContainer.appendChild(arrow);
     });
