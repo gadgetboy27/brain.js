@@ -17,8 +17,11 @@
         vr-mode-ui="enabled: false"
         embedded
         arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
-
-        <a-box material="color: #000;" scale="3 3 3" position="0 0 0" gps-entity-place="latitude: 44.498529; longitude: 11.356657;"></a-box>
+        <!-- Arrow asset -->
+        <a-assets>
+            <a-asset-item id="arrow-model" src="path/to/your/arrow-model.glb"></a-asset-item>
+        </a-assets>
+        <a-entity id="dynamic-entities"></a-entity>
         <a-camera gps-camera="minDistance: 30;" rotation-reader></a-camera>
     </a-scene>
 </body>
