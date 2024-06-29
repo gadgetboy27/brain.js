@@ -1,96 +1,68 @@
-function initialize() {
-    // Set up initial map and street view
-    const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Default to Fenway
-
-    const map = new google.maps.Map(document.getElementById("map"), {
-        center: initialPosition,
-        zoom: 14,
-    });
-
-    const panorama = new google.maps.StreetViewPanorama(
-        document.getElementById("pano"),
-        {
-            position: initialPosition,
-            pov: {
-                heading: 34,
-                pitch: 10,
-            },
-            motionTracking: true,
-        }
-    );
-
-    map.setStreetView(panorama);
-
-    // Use geolocation to get the current position
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const currentLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
-
-                // Set the new position for the map and panorama
-                map.setCenter(currentLocation);
-                panorama.setPosition(currentLocation);
-
-                // Load nearby places
-                loadNearbyPlaces(map, currentLocation);
-            },
-            () => {
-                console.error("Error retrieving geolocation");
-            },
-            {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 27000,
-            }
-        );
-    } else {
-        console.error("Geolocation is not supported by this browser.");
-    }
-}
-
-// Function to load nearby places using Google Places API
-async function loadNearbyPlaces(map, position) {
-    const service = new google.maps.places.PlacesService(map);
-    const request = {
-        location: position,
-        radius: '1500', // Search within 1.5 km radius
-        type: ['restaurant', 'cafe', 'store'], // Types of places to search for
+// getting places from APIs
+function loadPlaces(position) {
+    const params = {
+        radius: 300,    // search places not farther than this value (in meters)
+        clientId: 'UK32CEVITYO5AMHU3ZRAASDZ25QCODXPSJ2P0LW3ANSJ55E5',
+        clientSecret: 'TZY0JD4AY2QZFNK124NEW2DGMRFVH34EHJ1CF1A42FTFIGHG',
+        version: '20240628',    // foursquare versioning, required but unuseful for this demo
     };
 
-    service.nearbySearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            for (let i = 0; i < results.length; i++) {
-                const place = results[i];
-                createMarker(place);
-            }
-        } else {
-            console.error('Places API request failed');
+    // CORS Proxy to avoid CORS problems
+    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+
+    // Foursquare API (limit param: number of maximum places to fetch)
+    const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
+        &ll=${position.latitude},${position.longitude}
+        &radius=${params.radius}
+        &client_id=${params.clientId}
+        &client_secret=${params.clientSecret}
+        &limit=30 
+        &v=${params.version}`;
+    return fetch(endpoint)
+        .then((res) => {
+            return res.json()
+                .then((resp) => {
+                    return resp.response.venues;
+                })
+        })
+        .catch((err) => {
+            console.error('Error with places API', err);
+        })
+};
+
+
+window.onload = () => {
+    const scene = document.querySelector('a-scene');
+
+    // first get current user location
+    return navigator.geolocation.getCurrentPosition(function (position) {
+
+        // than use it to load from remote APIs some places nearby
+        loadPlaces(position.coords)
+            .then((places) => {
+                places.forEach((place) => {
+                    const latitude = place.location.lat;
+                    const longitude = place.location.lng;
+
+                    // add place name
+                    const placeText = document.createElement('a-link');
+                    placeText.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
+                    placeText.setAttribute('title', place.name);
+                    placeText.setAttribute('scale', '15 15 15');
+                    
+                    placeText.addEventListener('loaded', () => {
+                        window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
+                    });
+
+                    scene.appendChild(placeText);
+                });
+            })
+    },
+        (err) => console.error('Error in retrieving position', err),
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 27000,
         }
-    });
-}
-
-// Function to create a marker for each place
-function createMarker(place) {
-    const marker = new google.maps.Marker({
-        map,
-        position: place.geometry.location,
-    });
-
-    google.maps.event.addListener(marker, 'click', function () {
-        const contentString = `
-            <div>
-                <h2>${place.name}</h2>
-                <p>${place.vicinity}</p>
-            </div>
-        `;
-        const infowindow = new google.maps.InfoWindow({
-            content: contentString,
-        });
-        infowindow.open(map, marker);
-    });
-}
-
-window.initialize = initialize;
+    );
+};
