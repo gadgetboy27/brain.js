@@ -53,32 +53,24 @@ function staticLoadPlaces() {
 function dynamicLoadPlaces(position) {
     let params = {
         radius: 300,    // search places not farther than this value (in meters)
-        clientId: 'HZIJGI4COHQ4AI45QXKCDFJWFJ1SFHYDFCCWKPIJDWHLVQVZ',   // add your credentials here
-        clientSecret: '',   // add your credentials here
+        clientId: 'UK32CEVITYO5AMHU3ZRAASDZ25QCODXPSJ2P0LW3ANSJ55E5',   // add your credentials here
+        clientSecret: 'TZY0JD4AY2QZFNK124NEW2DGMRFVH34EHJ1CF1A42FTFIGHG',   // add your credentials here
         version: '20300101',    // foursquare versioning, required but unuseful for this demo
     };
 
-    // CORS Proxy to avoid CORS problems
-    let corsProxy = 'https://cors-anywhere.herokuapp.com/';
+    const url = 'https://api.foursquare.com/v2/venues/search?oauth_token=YCZDQUTGLMWRTP5Y2MAAKUVBVOMFOU3XYMEB2QKSKYDI333N';
+        const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'fsq3G3x+p/7LzoDS8jxsrhOegdXrYM8uBuDL1bBauE75NfU='
+        }
+        };
 
-    // Foursquare API
-    let endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
-        &ll=${position.latitude},${position.longitude}
-        &radius=${params.radius}
-        &client_id=${params.clientId}
-        &client_secret=${params.clientSecret}
-        &limit=15
-        &v=${params.version}`;
-    return fetch(endpoint)
-        .then((res) => {
-            return res.json()
-                .then((resp) => {
-                    return resp.response.venues;
-                })
-        })
-        .catch((err) => {
-            console.error('Error with places API', err);
-        })
+        fetch(url, params, options)
+        .then(res => res.json())
+        .then(json => console.log(json))
+        .catch(err => console.error('error:' + err));
 };
 
 function renderPlaces(places) {

@@ -5,11 +5,16 @@ async function loadPlaces(position) {
         clientId: 'UK32CEVITYO5AMHU3ZRAASDZ25QCODXPSJ2P0LW3ANSJ55E5',
         clientSecret: 'TZY0JD4AY2QZFNK124NEW2DGMRFVH34EHJ1CF1A42FTFIGHG',
         version: '20300101', // Foursquare versioning
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'fsq3G3x+p/7LzoDS8jxsrhOegdXrYM8uBuDL1bBauE75NfU='
+        }
     };
 
     const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
-    const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
+    const url = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
         &ll=${position.latitude},${position.longitude}
         &radius=${params.radius}
         &client_id=${params.clientId}
@@ -18,7 +23,7 @@ async function loadPlaces(position) {
         &v=${params.version}`;
 
     try {
-        const res = await fetch(endpoint);
+        const res = await fetch(url);
         const resp = await res.json();
         return resp.response.venues;
     } catch (err) {
