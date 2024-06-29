@@ -17,8 +17,8 @@ function dynamicLoadPlaces(coords) {
     return new Promise((resolve, reject) => {
         // Example data, replace with your dynamic fetching logic
         const places = [
-            {latitude: 44.498529, longitude: 11.356657},
-            {latitude: 44.498500, longitude: 11.356600},
+            {latitude: -36.912300, longitude: 174.739000},
+            // {latitude: 44.498500, longitude: 11.356600},
             // Add more GPS locations as needed
         ];
         resolve(places);
