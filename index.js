@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 // getting places from APIs
 function loadPlaces(position) {
     const params = {
