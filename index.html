@@ -10,18 +10,18 @@
     <script>
         THREEx.ArToolkitContext.baseURL = 'https://raw.githack.com/jeromeetienne/ar.js/master/three.js/'
     </script>
-    <script src="./index.js"></script>
+    <script src="./index3.js"></script>
 </head>
 
 <body style='margin: 0; overflow: hidden;'>
-    <a-scene 
-        vr-mode-ui='enabled: false' 
+    <a-scene
+        cursor='rayOrigin: mouse; fuse: true; fuseTimeout: 0;'
+        raycaster="objects: [gps-entity-place];"
+        vr-mode-ui="enabled: false"
         embedded
         arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
 
-        <a-triangle color="#CCC" vertex-c="0 -1 0"></a-triangle>
-
-    <a-camera gps-new-camera="minDistance: 40;" rotation-reader></a-camera>
-</a-scene>
+        <a-camera gps-new-camera="minDistance: 40;" rotation-reader></a-camera>
+    </a-scene>
 </body>
 </html>
