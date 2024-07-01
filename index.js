@@ -1,4 +1,3 @@
-const fetch = require('node-fetch');
 
 // getting places from APIs
 function loadPlaces(position) {
@@ -24,14 +23,15 @@ function loadPlaces(position) {
         .then((res) => {
             return res.json()
                 .then((resp) => {
-                    return resp.response.venues;
+                    console.log(resp.response.venues);
                 })
         })
         .catch((err) => {
             console.error('Error with places API', err);
         })
+        
 };
-
+    
 
 window.onload = () => {
     const scene = document.querySelector('a-scene');
