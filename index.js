@@ -1,70 +1,25 @@
-
-// getting places from APIs
-function loadPlaces(position) {
-    const params = {
-        radius: 300,    // search places not farther than this value (in meters)
-        clientId: 'UK32CEVITYO5AMHU3ZRAASDZ25QCODXPSJ2P0LW3ANSJ55E5',
-        clientSecret: 'TZY0JD4AY2QZFNK124NEW2DGMRFVH34EHJ1CF1A42FTFIGHG',
-        version: '20240128',  // foursquare versioning, required but unuseful for this demo
-    };
-
-    // CORS Proxy to avoid CORS problems
-    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-
-    // Foursquare API (limit param: number of maximum places to fetch)
-    const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
-        &ll=${position.latitude},${position.longitude}
-        &radius=${params.radius}
-        &client_id=${params.clientId}
-        &client_secret=${params.clientSecret}
-        &limit=30 
-        &v=${params.version}`;
-    return fetch(endpoint)
-        .then((res) => {
-            return res.json()
-                .then((resp) => {
-                    console.log(resp.response.venues);
-                })
-        })
-        .catch((err) => {
-            console.error('Error with places API', err);
-        })
-        
-};
-    
-
 window.onload = () => {
-    const scene = document.querySelector('a-scene');
+    let testEntityAdded = false;
 
-    // first get current user location
-    return navigator.geolocation.getCurrentPosition(function (position) {
+    const el = document.querySelector('[gps-new-camera');
 
-        // than use it to load from remote APIs some places nearby
-        loadPlaces(position.coords)
-            .then((places) => {
-                places.forEach((place) => {
-                    const latitude = place.location.lat;
-                    const longitude = place.location.lng;
-
-                    // add place name
-                    const placeText = document.createElement('a-link');
-                    placeText.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
-                    placeText.setAttribute('title', place.name);
-                    placeText.setAttribute('scale', '15 15 15');
-                    
-                    placeText.addEventListener('loaded', () => {
-                        window.dispatchEvent(new CustomEvent('gps-new-entity-place-loaded'))
-                    });
-
-                    scene.appendChild(placeText);
-                });
-            })
-    },
-        (err) => console.error('Error in retrieving position', err),
-        {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: 27000,
+    el.addEventListener('gps-camera-update-position', e => {
+        if(!testEntityAdded) {
+            alert(`Got first GPS position: lon ${e.detail.position.longitude} lat ${e.detail.position.latitude}`);
+            // Box added to nort of initial GPS position
+            const entity = document.createElement(a-box);
+            entity.setAttribute('scale', {
+                x: 20,
+                y: 20,
+                z: 20
+            });
+            entity.setAttribute('material', {color: 'red' });
+            entity.setAttribute('gps-new-entity-place', {
+                latitude: e.detail.position.latitude + 0.001,
+                lonitude: e.detail.position.longitude
+            });
+            document.querySelector('a-scene').appendChild(entity);
         }
-    );
-};
+        testEntityAdded = true;
+    });
+}
